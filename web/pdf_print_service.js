@@ -242,9 +242,7 @@ window.print = function print() {
       // Without the check, an unrelated print request (created after aborting
       // this print request while the pages were being generated) would be
       // aborted.
-      if (activeServiceOnEntry.active) {
-        abort();
-      }
+       
     });
   }
 };
@@ -311,7 +309,9 @@ if ('onbeforeprint' in window) {
   // Do not propagate before/afterprint events when they are not triggered
   // from within this polyfill. (FF /IE / Chrome 63+).
   let stopPropagationIfNeeded = function(event) {
-    if (event.detail !== 'custom' && event.stopImmediatePropagation) {
+    if (activeService && event.type == 'afterprint') {
+      abort();
+    } else if (event.detail !== 'custom' && event.stopImmediatePropagation) {
       event.stopImmediatePropagation();
     }
   };
